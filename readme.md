@@ -172,7 +172,7 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 
 ## 👥 Authors
 
-- Your Name - *Initial work* - [YourGitHub](https://github.com/EngRidhoNet)
+- Ridho Aulia Rahman - *Halcyon* - [Me](https://github.com/EngRidhoNet)
 
 ## 🐛 Troubleshooting
 
