@@ -5,10 +5,13 @@
   "author": "Ridho Aulia Rahman",
   "scripts": {
     "start": "wp-scripts start src/js/index.js --output-path=assets/js",
+    "sass": "sass src/scss:assets/css --style compressed",
     "readme": "grunt readme",
     "i18n": "grunt i18n",
-    "build": "wp-scripts build src/js/index.js --output-path=assets/js",
-    "sass": "sass src/scss:assets/css --style compressed"
+    "build:css": "sass src/scss/popup.scss assets/css/popup.css --no-source-map",
+    "build:js": "webpack --mode=production",
+    "build": "npm run build:css && npm run build:js",
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "@wordpress/scripts": "^30.10.0",

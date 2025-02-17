@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import Popup from './Popup';
+import Popup from './popup';
 
 // Tunggu DOM siap
 document.addEventListener('DOMContentLoaded', function() {

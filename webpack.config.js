@@ -1,12 +1,26 @@
-const defaultConfig = require("@wordpress/scripts/config/webpack.config");
+const path = require("path");
 
 module.exports = {
-	...defaultConfig,
-	entry: {
-		index: "./src/js/index.js",
-	},
+	entry: "./src/js/Popup.js",
 	output: {
-		path: __dirname + "/assets/js",
-		filename: "[name].js",
+		path: path.resolve(__dirname, "assets/js"),
+		filename: "popup.js",
+	},
+	module: {
+		rules: [
+			{
+				test: /\.jsx?$/,
+				exclude: /node_modules/,
+				use: {
+					loader: "babel-loader",
+					options: {
+						presets: ["@babel/preset-env", "@babel/preset-react"],
+					},
+				},
+			},
+		],
+	},
+	resolve: {
+		extensions: [".js", ".jsx"],
 	},
 };

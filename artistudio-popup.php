@@ -63,11 +63,42 @@ final class PopupPlugin implements PopupInterface
 		// Private constructor for singleton
 	}
 
+	public function add_meta_boxes()
+	{
+		add_meta_box(
+			'popup_page',
+			__('Popup Target Page', 'artstudio-popup'),
+			[$this, 'render_popup_page_meta_box'],
+			'popup',
+			'side',
+			'default'
+		);
+	}
+
+	public function render_popup_page_meta_box($post)
+	{
+		$value = get_post_meta($post->ID, 'popup_page', true);
+?>
+		<label for="popup_page"><?php _e('Target Page Slug:', 'artstudio-popup'); ?></label>
+		<input type="text" id="popup_page" name="popup_page" value="<?php echo esc_attr($value); ?>" style="width:100%;" />
+		<p><?php _e('Masukkan slug halaman di mana popup ini harus muncul, contoh: "about"', 'artstudio-popup'); ?></p>
+<?php
+	}
+
+	public function save_popup_meta($post_id)
+	{
+		if (array_key_exists('popup_page', $_POST)) {
+			update_post_meta($post_id, 'popup_page', sanitize_text_field($_POST['popup_page']));
+		}
+	}
+
 	public function init()
 	{
 		add_action('init', [$this, 'register_post_type']);
 		add_action('rest_api_init', [$this, 'register_rest_routes']);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+		add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
+		add_action('save_post', [$this, 'save_popup_meta']);
 	}
 
 	public function register_post_type()
@@ -108,7 +139,7 @@ final class PopupPlugin implements PopupInterface
 		register_rest_route('artistudio/v1', '/popup', [
 			'methods' => 'GET',
 			'callback' => [$this, 'get_popups'],
-			'permission_callback' => [$this, 'check_permission'],
+			'permission_callback' => '__return_true',
 		]);
 	}
 
@@ -129,11 +160,12 @@ final class PopupPlugin implements PopupInterface
 		$data = [];
 
 		foreach ($popups as $popup) {
+			$page_slug = get_post_meta($popup->ID, 'popup_page', true) ?: '*'; // Jika kosong, tampilkan '*'
 			$data[] = [
 				'id' => $popup->ID,
 				'title' => $popup->post_title,
-				'description' => $popup->post_content,
-				'page' => get_post_meta($popup->ID, 'popup_page', true),
+				'description' => wpautop($popup->post_content), // Perbaiki agar HTML terlihat
+				'page' => $page_slug,
 			];
 		}
 

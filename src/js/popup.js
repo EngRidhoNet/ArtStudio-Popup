@@ -18,16 +18,29 @@ const Popup = () => {
 					const data = await response.json();
 					setPopups(data);
 
-					// Check if any popup should be shown on current page
-					const currentPath = window.location.pathname;
-					const matchingPopup = data.find(
-						(popup) =>
-							popup.page === currentPath || popup.page === "*"
+					// Ambil path saat ini tanpa trailing slash
+					const currentPath = window.location.pathname.replace(
+						/^\/|\/$/g,
+						"",
 					);
 
-					if (matchingPopup) {
+					const matchingPopup = data.find(
+						(popup) =>
+							popup.page === currentPath || popup.page === "*",
+					);
+
+
+					// Cegah popup muncul berulang dengan sessionStorage
+					if (
+						matchingPopup &&
+						!sessionStorage.getItem(`popup-${matchingPopup.id}`)
+					) {
 						setCurrentPopup(matchingPopup);
 						setTimeout(() => setIsVisible(true), 1000);
+						sessionStorage.setItem(
+							`popup-${matchingPopup.id}`,
+							"shown",
+						);
 					}
 				}
 			} catch (error) {
